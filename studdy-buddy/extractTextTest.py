@@ -1,5 +1,5 @@
 from pypdf import PdfReader
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect,url_for, session
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 import os
@@ -68,9 +68,7 @@ def generate_flashcards(notes):
             Do not include ```json.
             Return only the JSON, no other text.
 
-            Also the questions don't have to be exactly the same
-            as the format, just make sure they are valid JSON and 
-            have a question and answer. Preferably, keep the answers
+            Preferably, keep the answers
             to short and concise.
             
             """}],
@@ -81,6 +79,7 @@ def generate_flashcards(notes):
 
 # flask
 app = Flask(__name__, template_folder="templates")
+app.secret_key = "dev-super-secret-key-of-secretness"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -99,7 +98,17 @@ def index():
             notes = uploaded_file.read().decode("utf-8")
 
         if notes.strip():
+            print("sending notes to azure\n")
             flashcards = generate_flashcards(notes)
+
+            print("got flashcards:", flashcards)
+
+            # save generated cards temporarily
+            print("got flashcards\n")
+            session["flashcards"] = flashcards
+        return redirect(url_for("index"))
+
+    flashcards = session.pop("flashcards", [])
     
     # flashcards = generate_flashcards()
 
