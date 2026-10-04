@@ -1,6 +1,9 @@
 from pypdf import PdfReader
+from flask import Flask, render_template, request
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
+import os
+import json
 
 def extract_text(filename):
 
@@ -34,16 +37,20 @@ project_client = AIProjectClient(
 my_agent = "natha"
 my_version = "5"
 
-# notes
-notes = extract_text("test_notes.txt")
+# notes; finds path then extracts text
+notes_path = os.path.join(
+os.path.dirname(__file__),
+"test_notes.txt"
+)
+
+notes = extract_text(notes_path)
 print("i got the notes chat")
 print(notes[:50] + "...")
 
-# send to azure
-openai_client = project_client.get_openai_client()
-
-# request in formatted JSON
-response = openai_client.responses.create(
+# request from azure in formatted JSON
+def generate_flashcards():
+    openai_client = project_client.get_openai_client()  
+    response = openai_client.responses.create(
     input=[{"role": "user",
             "content": """
             Here are my study notes:\n\n,
@@ -77,6 +84,22 @@ response = openai_client.responses.create(
             
             """}],
     extra_body={"agent_reference": {"name": my_agent, "version": my_version, "type": "agent_reference"}},
-)
+    )
+    data = json.loads(response.output_text)
+    return data["flashcards"]
 
-print(f"Response output: {response.output_text}")
+# flask
+app = Flask(__name__)
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    
+    flashcards = generate_flashcards()
+
+    return render_template(
+        "index2.html",
+        flashcards=flashcards
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
