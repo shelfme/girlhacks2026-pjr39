@@ -48,7 +48,17 @@ def generate_flashcards(notes):
 
             """ + notes + """
 
-            Create 10 flashcards using these notes.
+            Create an appropriate number of flashcards baesd on the
+            amount and complexity of the notes provided.
+
+            Short notes: 5-10 flashcards
+            Medium notes: 10-20 flashcards
+            Large notes: 20-40 flashcards
+            Never create more than 40 flashcards.
+
+            Cover the important concepts and avoid repetitive
+            or unnecessary questions.
+
             Return only valid JSON in the following format:
 
             {{
