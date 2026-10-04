@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flashcards</title>
+</head>
+
+<body>
+
+    <h1>My Flashcards</h1>
+
+    <p>Template is working!</p>
+
+    {% for card in flashcards %}
+        <h2>{{ card.question }}</h2>
+        <p>{{ card.answer }}</p>
+        <hr>
+    {% endfor %}
+
+</body>
+</html>

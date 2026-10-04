@@ -5,6 +5,18 @@ from azure.ai.projects import AIProjectClient
 import os
 import json
 
+# azure
+endpoint = "https://girlhacks-pjr39-resource.services.ai.azure.com/api/projects/girlhacks-pjr39"
+
+project_client = AIProjectClient(
+    endpoint=endpoint,
+    credential=DefaultAzureCredential(),
+)
+
+my_agent = "natha"
+my_version = "5"
+
+# get text from notes
 def extract_text(filename):
 
     if filename.lower().endswith(".txt"):
@@ -26,29 +38,8 @@ def extract_text(filename):
     else:
         return ""
 
-# azure
-endpoint = "https://girlhacks-pjr39-resource.services.ai.azure.com/api/projects/girlhacks-pjr39"
-
-project_client = AIProjectClient(
-    endpoint=endpoint,
-    credential=DefaultAzureCredential(),
-)
-
-my_agent = "natha"
-my_version = "5"
-
-# notes; finds path then extracts text
-notes_path = os.path.join(
-os.path.dirname(__file__),
-"test_notes.txt"
-)
-
-notes = extract_text(notes_path)
-print("i got the notes chat")
-print(notes[:50] + "...")
-
 # request from azure in formatted JSON
-def generate_flashcards():
+def generate_flashcards(notes):
     openai_client = project_client.get_openai_client()  
     response = openai_client.responses.create(
     input=[{"role": "user",
@@ -89,15 +80,35 @@ def generate_flashcards():
     return data["flashcards"]
 
 # flask
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    
-    flashcards = generate_flashcards()
 
+    flashcards = []
+
+    if request.method == "POST":
+
+        # from txt box
+        notes = request.form.get("notes", "")
+
+        # txt file upload
+        uploaded_file = request.files.get("file")
+
+        if uploaded_file and uploaded_file.filename:
+            notes = uploaded_file.read().decode("utf-8")
+
+        if notes.strip():
+            flashcards = generate_flashcards(notes)
+    
+    # flashcards = generate_flashcards()
+
+    print("Flashcards:")
+    print(flashcards)
+
+    # render template
     return render_template(
-        "index2.html",
+        "index3.html",
         flashcards=flashcards
     )
 

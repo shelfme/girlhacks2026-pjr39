@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flashcards</title>
+</head>
+
+<body>
+
+    <h1>My Flashcards</h1>
+
+    <!-- Demo input form -->
+    <h2>Enter Your Study Notes</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- Text box -->
+        <label for="notes">Paste your notes:</label>
+        <br>
+
+        <textarea
+            id="notes"
+            name="notes"
+            rows="10"
+            cols="60"
+            placeholder="Type or paste your study notes here..."
+        ></textarea>
+
+        <br><br>
+
+        <!-- TXT file upload -->
+        <label for="file">Or upload a .txt file:</label>
+        <br>
+
+        <input
+            type="file"
+            id="file"
+            name="file"
+            accept=".txt"
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Generate Flashcards
+        </button>
+
+    </form>
+
+    <hr>
+
+    <!-- Generated flashcards -->
+    <h2>My Flashcards</h2>
+
+    {% for card in flashcards %}
+
+        <div>
+            <h3>{{ card.question }}</h3>
+            <p>{{ card.answer }}</p>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+</body>
+</html>
