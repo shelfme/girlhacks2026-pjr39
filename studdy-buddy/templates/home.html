@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>StudyThing</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- Navigation bar -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <h1>STUDYTHING</h1>
+        </div>
+
+        <div class="nav-buttons">
+            <button onclick="window.location.href='/'">Paste notes here!</button>
+        </div>
+
+    </nav>
+
+
+    <!-- Main content -->
+
+    <main>
+
+        <h2 class="paste-notes">
+
+            <span class="small-text">
+                PASTE YOUR
+            </span>
+
+            <span class="big-text">
+                NOTES HERE
+            </span>
+
+        </h2>
+
+
+        <!-- Notes box -->
+
+        <textarea
+            class="notes-box"
+            id="notes-input"
+            placeholder="Type or paste your notes here..."
+        ></textarea>
+
+
+        <!-- GO button -->
+
+        <div class="go-container">
+
+            <button
+                class="go-button"
+                id="generate-button"
+            >
+                GO!
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <!-- JavaScript -->
+
+<script>
+
+    const notesInput = document.querySelector("#notes-input");
+    const generateButton = document.querySelector("#generate-button");
+
+    generateButton.addEventListener("click", function() {
+
+        const notes = notesInput.value;
+
+        // Generate flashcards
+        fetch("/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                notes: notes
+            })
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            // Save the flashcards
+            localStorage.setItem(
+                "flashcards",
+                JSON.stringify(data.flashcards)
+            );
+
+            // Now generate the study guide
+            return fetch("/study-guide", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    notes: notes
+                })
+            });
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            // Save the study guide
+            localStorage.setItem(
+                "studyGuide",
+                JSON.stringify(data.study_guide)
+            );
+
+            // Go to flashcards
+            window.location.href = "/flashcards";
+
+        });
+
+    });
+
+</script>
+</body>
+
+</html>

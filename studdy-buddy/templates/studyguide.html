@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StudyThing - Study Guide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <h1>STUDYTHING</h1>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="window.location.href='/'">
+            Paste notes here!
+        </button>
+
+        <button onclick="window.location.href='/flashcards'">
+    Back to flashcards!
+</button>
+    </div>
+
+</nav>
+
+
+<main>
+
+    <div class="study-guide-container">
+
+        <h2 class="study-guide-title">
+            STUDY GUIDE
+        </h2>
+
+        <div class="study-guide" style="overflow-y: auto; height: 500px;">
+            <div id="study-guide-content"></div>
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    const savedGuide = localStorage.getItem("studyGuide");
+
+    const content = document.querySelector("#study-guide-content");
+
+    console.log("Saved study guide:");
+    console.log(savedGuide);
+
+    if (savedGuide) {
+
+        try {
+
+            const studyGuide = JSON.parse(savedGuide);
+
+            console.log("Parsed study guide:");
+            console.log(studyGuide);
+
+            content.innerHTML = "";
+
+            const mainTopics = document.createElement("h3");
+            mainTopics.textContent = "MAIN TOPICS";
+            content.appendChild(mainTopics);
+
+            studyGuide.main_topics.forEach(function(topic) {
+                const item = document.createElement("p");
+                item.textContent = "• " + topic;
+                content.appendChild(item);
+            });
+
+            const importantConcepts = document.createElement("h3");
+            importantConcepts.textContent = "IMPORTANT CONCEPTS";
+            content.appendChild(importantConcepts);
+
+            studyGuide.important_concepts.forEach(function(concept) {
+                const item = document.createElement("p");
+                item.textContent = "• " + concept;
+                content.appendChild(item);
+            });
+
+            const keyTerms = document.createElement("h3");
+            keyTerms.textContent = "KEY TERMS AND DEFINITIONS";
+            content.appendChild(keyTerms);
+
+            studyGuide.key_terms.forEach(function(item) {
+                const term = document.createElement("p");
+
+                term.textContent =
+                    item.term + ": " + item.definition;
+
+                content.appendChild(term);
+            });
+
+            const importantFacts = document.createElement("h3");
+            importantFacts.textContent = "IMPORTANT FACTS";
+            content.appendChild(importantFacts);
+
+            studyGuide.important_facts.forEach(function(fact) {
+                const item = document.createElement("p");
+                item.textContent = "• " + fact;
+                content.appendChild(item);
+            });
+
+            const thingsToRemember = document.createElement("h3");
+            thingsToRemember.textContent = "THINGS TO REMEMBER";
+            content.appendChild(thingsToRemember);
+
+            studyGuide.things_to_remember.forEach(function(thing) {
+                const item = document.createElement("p");
+                item.textContent = "• " + thing;
+                content.appendChild(item);
+            });
+
+        } catch (error) {
+
+            console.error("Could not parse study guide:", error);
+            content.textContent = "There was an error loading the study guide.";
+
+        }
+
+    } else {
+
+        content.textContent = "No study guide found.";
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StudyThing - Flashcards</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <h1>STUDYTHING</h1>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="window.location.href='/'">
+            Start over!
+        </button>
+	<button onclick="window.location.href='/studyguide'">
+    Make a study guide!
+</button>
+    </div>
+</nav>
+
+<main>
+
+    <div class="flashcard-container">
+
+        <button class="arrow-button" id="prev-button">←</button>
+
+        <div class="flashcard-area">
+
+            <div class="card-counter"></div>
+
+            <div class="flashcard">
+
+                <div class="flashcard-inner">
+
+                    <div class="flashcard-front">
+                        <div>
+                            <div class="card-question"></div>
+                            <div class="click-to-flip">
+                                Click to see my answer!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-back">
+                        <div>
+                            <div class="card-answer"></div>
+                            <div class="click-to-flip">
+                                Click to flip me back!
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button class="arrow-button" id="next-button">→</button>
+
+    </div>
+
+</main>
+
+
+    <script>
+
+        const flashcards = JSON.parse(localStorage.getItem("flashcards"));
+
+let currentCard = 0;
+
+const question = document.querySelector(".card-question");
+const answer = document.querySelector(".card-answer");
+const card = document.querySelector(".flashcard");
+const nextButton = document.querySelector("#next-button");
+const prevButton = document.querySelector("#prev-button");
+const inner = card.querySelector(".flashcard-inner");
+const counter = document.querySelector(".card-counter");
+
+function showCard() {
+    question.textContent = flashcards[currentCard].question;
+    answer.textContent = flashcards[currentCard].answer;
+    counter.textContent = (currentCard + 1) + " / " + flashcards.length;
+}
+
+showCard();
+
+
+        // --------------------------------
+        // NEXT BUTTON
+        // --------------------------------
+
+        nextButton.addEventListener("click", function() {
+
+            if (currentCard < flashcards.length - 1) {
+
+                currentCard = currentCard + 1;
+
+
+                // If we're currently looking at the back,
+                // flip the card back before changing the text.
+
+                if (inner.classList.contains("flipped")) {
+
+                    inner.classList.remove("flipped");
+
+                    setTimeout(function() {
+
+                        showCard();
+
+                    }, 600);
+
+                }
+
+                // If we're already looking at the front,
+                // change the card immediately.
+
+                else {
+
+                    showCard();
+
+                }
+
+            }
+
+        });
+
+
+        // --------------------------------
+        // PREVIOUS BUTTON
+        // --------------------------------
+
+        prevButton.addEventListener("click", function() {
+
+            if (currentCard > 0) {
+
+                currentCard = currentCard - 1;
+
+
+                // If we're currently looking at the back,
+                // flip the card back before changing the text.
+
+                if (inner.classList.contains("flipped")) {
+
+                    inner.classList.remove("flipped");
+
+                    setTimeout(function() {
+
+                        showCard();
+
+                    }, 600);
+
+                }
+
+                // If we're already looking at the front,
+                // change the card immediately.
+
+                else {
+
+                    showCard();
+
+                }
+
+            }
+
+        });
+
+
+        // --------------------------------
+        // FLIP FLASHCARD
+        // --------------------------------
+
+        card.addEventListener("click", function() {
+
+            inner.classList.toggle("flipped");
+
+        });
+
+    </script>
+
+</body>
+
+</html>
