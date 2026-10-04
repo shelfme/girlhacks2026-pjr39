@@ -1,0 +1,237 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background-image:
+        linear-gradient(rgba(20, 15, 40, 0.35), rgba(20, 15, 40, 0.35)),
+        url("background.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.notes-box {
+    display: block;
+    width: 50%;
+    height: 150px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    border: none;
+    resize: none;
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+    background-color: #D4D4D4;
+    border: 5px solid purple;
+    margin: 0 auto;
+}
+
+.paste-notes {
+    text-align: center;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    margin-top: 200px;
+}
+
+.small-text {
+    display: block;
+    font-size: 25px;
+}
+
+.big-text {
+    display: block;
+    font-size: 50px;
+}
+
+.smaller-text {
+    display: block;
+    font-size: 20px;
+}
+
+.go-button {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 15px;
+    background-color: purple;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.go-container {
+    text-align: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 40px;
+}
+
+
+.logo h1 {
+    color: rgb(255, 255, 255);
+    font-family:"Poppins", sans-serif;
+    margin: 0;
+}
+
+
+.nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.nav-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.flashcard {
+    width: 500px;
+    height: 300px;
+    position: relative;
+    perspective: 1000px;
+}
+
+.flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-front,
+.flashcard-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    font-size: 30px;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+
+    background-color: white;
+    border-radius: 20px;
+    border: 2px solid purple;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    backface-visibility: hidden;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+}
+
+.flashcard-inner.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-question,
+.card-answer {
+    font-size: 30px;
+    text-align: center;
+}
+
+.click-to-flip {
+    font-size: 14px;
+    margin-top: 15px;
+    opacity: 0.6;
+    text-align: center;
+}
+
+.arrow-button {
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.flashcard-container {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.flashcard-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-counter {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.study-guide-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 60px auto;
+}
+
+.study-guide-title {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.study-guide {
+    width: 80%;
+    height: 500px;
+
+    background-color: white;
+    border: 5px solid red;
+    border-radius: 20px;
+
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#study-guide-content h3 {
+    font-family: "Poppins", sans-serif;
+    font-size: 24px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+#study-guide-content p {
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 8px 0;
+}

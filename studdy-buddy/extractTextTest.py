@@ -87,49 +87,115 @@ def generate_flashcards(notes):
     data = json.loads(response.output_text)
     return data["flashcards"]
 
+def generate_study_guide(notes):
+    openai_client = project_client.get_openai_client()
+
+    response = openai_client.responses.create(
+        input=[{
+            "role": "user",
+            "content": """
+Here are my study notes:
+
+""" + notes + """
+
+Create a study guide based only on these notes.
+
+Return ONLY valid JSON in exactly this format:
+
+{
+    "main_topics": [
+        "Topic 1",
+        "Topic 2"
+    ],
+    "important_concepts": [
+        "Important concept 1",
+        "Important concept 2"
+    ],
+    "key_terms": [
+        {
+            "term": "Term 1",
+            "definition": "Definition 1"
+        },
+        {
+            "term": "Term 2",
+            "definition": "Definition 2"
+        }
+    ],
+    "important_facts": [
+        "Important fact 1",
+        "Important fact 2"
+    ],
+    "things_to_remember": [
+        "Important thing 1",
+        "Important thing 2"
+    ]
+}
+
+Rules:
+- Return only valid JSON.
+- Do not use markdown.
+- Do not include ```json.
+- Use only information from the notes.
+- Make the study guide clear and useful.
+- Do not add unrelated information.
+"""
+        }],
+        extra_body={
+            "agent_reference": {
+                "name": my_agent,
+                "version": my_version,
+                "type": "agent_reference"
+            }
+        },
+    )
+
+    data = json.loads(response.output_text)
+
+    return data
+
 # flask
 app = Flask(__name__, template_folder="templates")
 app.secret_key = "dev-super-secret-key-of-secretness"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    return render_template("home.html")
 
-    flashcards = []
 
-    if request.method == "POST":
+@app.route("/generate", methods=["POST"])
+def generate():
+    data = request.get_json()
+    notes = data.get("notes", "")
 
-        # from txt box
-        notes = request.form.get("notes", "")
+    print("Received notes:")
+    print(notes)
 
-        # txt file upload
-        uploaded_file = request.files.get("file")
+    flashcards = generate_flashcards(notes)
 
-        if uploaded_file and uploaded_file.filename:
-            notes = uploaded_file.read().decode("utf-8")
-
-        if notes.strip():
-            print("sending notes to azure\n")
-            flashcards = generate_flashcards(notes)
-
-            print("got flashcards:", flashcards)
-
-            # save generated cards temporarily
-            print("got flashcards\n")
-            session["flashcards"] = flashcards
-        return redirect(url_for("index"))
-
-    flashcards = session.pop("flashcards", [])
-    
-    # flashcards = generate_flashcards()
-
-    print("Flashcards:")
+    print("Generated flashcards:")
     print(flashcards)
 
-    # render template
-    return render_template(
-        "index3.html",
-        flashcards=flashcards
-    )
+    return {"flashcards": flashcards}
+
+
+@app.route("/study-guide", methods=["POST"])
+def study_guide():
+    data = request.get_json()
+
+    notes = data.get("notes", "")
+
+    guide = generate_study_guide(notes)
+
+    return {"study_guide": guide}
+
+
+@app.route("/flashcards")
+def flashcards_page():
+    return render_template("flashcards.html")
+
+@app.route("/studyguide")
+def studyguide_page():
+    return render_template("studyguide.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
